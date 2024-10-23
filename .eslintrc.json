@@ -1,7 +1,18 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off"
+  },
+  "parser": "@typescript-eslint/parser", // Make sure you have this line if not already present
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
   }
 }
-
