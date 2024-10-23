@@ -34,3 +34,24 @@ Photo Gallery App is a web application that allows users to upload and share pho
    ```bash
    git clone https://github.com/yourusername/photo-gallery-app.git
    cd photo-gallery-app
+   ```
+2. Create a .env file based on the .env.template file and fill in all necessary information.
+   ```bash
+   DATABASE_URL=
+   AWS_ACCESS_KEY_ID=
+   AWS_SECRET_ACCESS_KEY=
+   AWS_REGION=
+   AWS_S3_BUCKET_NAME=
+   ```
+   
+3. Run the following command to initialize your database:
+
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to `http://localhost:3000` to view the app.
