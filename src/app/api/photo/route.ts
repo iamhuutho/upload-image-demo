@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import AWS from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';  // For unique file naming
 
 const prisma = new PrismaClient();
 

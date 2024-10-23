@@ -5,9 +5,21 @@ import { Upload, Button, Input, List, Form, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+interface Comment {
+  id: number;
+  text: string;
+  createdAt: string; // Adjust the type based on your API response
+}
+
+interface Photo {
+  id: number;
+  url: string;
+  comments: Comment[];
+}
+
 export default function Home() {
-  const [photos, setPhotos] = useState<any[]>([]);
-  const [newComment, setNewComment] = useState('');
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [newComment, setNewComment] = useState<string>('');
   const [selectedPhotoId, setSelectedPhotoId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -16,10 +28,11 @@ export default function Home() {
 
   const fetchPhotos = async () => {
     try {
-      const res = await axios.get('/api/photo');
+      const res = await axios.get<Photo[]>('/api/photo');
       setPhotos(res.data);
     } catch (err) {
       message.error('Failed to fetch photos');
+      console.error(err);
     }
   };
 
@@ -34,13 +47,13 @@ export default function Home() {
       try {
         // Uploading photo to the API
         const res = await axios.post('/api/photo', {
-          file: base64, 
+          file: base64,
           fileName,
           fileType,
         });
 
         // Assuming the API responds with the uploaded photo details
-        const newPhoto = {
+        const newPhoto: Photo = {
           id: res.data.id, // Use the ID returned from your API
           url: res.data.url, // Use the URL returned from your API
           comments: [], // Initialize with an empty comments array
@@ -50,9 +63,11 @@ export default function Home() {
         setPhotos((prevPhotos) => [...prevPhotos, newPhoto]);
 
         message.success('Photo uploaded successfully');
-        window.location.reload();
+        // Consider removing the reload to keep state consistent
+        // window.location.reload();
       } catch (error) {
         message.error('Failed to upload photo');
+        console.error(error);
       }
     };
   };
@@ -64,15 +79,16 @@ export default function Home() {
         message.success('Comment added');
         setNewComment('');
         setSelectedPhotoId(null);
-        fetchPhotos(); // You may want to fetch again to get updated comments
+        fetchPhotos(); // Fetch again to get updated comments
       } catch (err) {
         message.error('Failed to add comment');
+        console.error(err);
       }
     }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className='p-20'>
       <h1>Photo Gallery</h1>
 
       <Upload customRequest={handleUpload}>
@@ -88,7 +104,7 @@ export default function Home() {
             <List
               itemLayout="horizontal"
               dataSource={photo.comments}
-              renderItem={(comment: any) => <List.Item>{comment.text}</List.Item>}
+              renderItem={(comment) => <List.Item>{comment.text}</List.Item>}
             />
             {selectedPhotoId === photo.id ? (
               <Form onFinish={() => handleCommentSubmit(photo.id)}>
